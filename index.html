@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SCFS · Supply-Chain-Free Skills</title>
-<meta name="description" content="A capability-based architecture for trustworthy agentic AI skill ecosystems. Camilo Pestana, PhD. USENIX Security 2027 submission.">
+<meta name="description" content="SCFS: open-source capability-based reference runtime for agentic AI skill ecosystems. Engineering integration of WASM isolation, sigstore, Fides IFC, SLSA, and capability tokens.">
 <meta property="og:title" content="SCFS - Supply-Chain-Free Skills">
-<meta property="og:description" content="A capability-based runtime for trustworthy agentic AI skill ecosystems.">
+<meta property="og:description" content="Open-source capability-based reference runtime for agentic AI skill ecosystems.">
 <meta property="og:image" content="./assets/hero.png">
 <meta property="og:type" content="website">
-<link rel="canonical" href="https://elcronos.github.io/scfs/">
+<link rel="canonical" href="https://elcronos.github.io/scfs-site/">
 <link rel="preconnect" href="https://rsms.me">
 <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
@@ -251,14 +251,13 @@ sup.ref a { border: none; }
  <div style="grid-column: 2/3; text-align:center;">
  <div class="pill" style="margin-bottom:1.5rem;">
  <span style="width:.5rem;height:.5rem;border-radius:999px;background:#22d3ee;display:inline-block;"></span>
- USENIX Security 2027 · Submission in preparation
+ Open-source reference runtime &middot; arXiv preprint and SaTML 2027 short paper in preparation
  </div>
  <h1 style="font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height:1.04; margin:0 0 1.25rem;">
  Supply-Chain-Free <span class="aurora">Skills</span>
  </h1>
  <p style="font-size: 1.35rem; line-height:1.5; color:#d1d3e2; max-width: 740px; margin: 0 auto 1.5rem;">
- A capability-based architecture for trustworthy agentic AI skill ecosystems.
- Six properties. One reference runtime. Three reproducible attacks blocked by construction.
+ A capability-based reference runtime for agentic AI skill ecosystems. Composes five existing security primitives into a single host with six properties. Demonstrates that documented supply-chain vulnerability classes can be blocked by construction.
  </p>
  <div style="display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; font-family:Inter; font-size:14px;">
  <span class="pill">Camilo Pestana, PhD <small style="opacity:.7">· solo author</small></span>
@@ -281,13 +280,16 @@ sup.ref a { border: none; }
 <section id="abstract" class="reveal" style="margin-top: 3rem;">
  <h2><span class="aurora">Abstract</span></h2>
  <p class="lead">
- Agentic AI skills - composable instruction + code bundles loaded on demand by LLM-powered assistants - are quietly becoming a new software supply chain. Three concurrent SoKs in early 2026<sup class="ref"><a href="#ref-maloyan">1</a><a href="#ref-xu">2</a><a href="#ref-jiang">3</a></sup> map the landscape. None ship a buildable defense.
+ Agentic AI skills, composable instruction and code bundles loaded on demand by LLM-powered assistants, are becoming a new software supply chain. Three concurrent SoKs in early 2026<sup class="ref"><a href="#ref-maloyan">1</a><a href="#ref-xu">2</a><a href="#ref-jiang">3</a></sup> map the threat landscape. What is missing is a buildable defense.
  </p>
  <p>
- We present <strong>Supply-Chain-Free Skills (SCFS)</strong>, a capability-based runtime architecture that composes five existing primitives - WASM isolation, capability tokens with per-invocation scoping, sigstore-style instruction attestation, Fides-style information-flow control<sup class="ref"><a href="#ref-fides">4</a></sup>, and SLSA reproducible-build manifests<sup class="ref"><a href="#ref-slsa">5</a></sup> - into a single host with six security properties (P1-P6). We instantiate three new attacks against current agentic-skill platforms representing distinct injection points in the supply chain, and demonstrate that each is blocked by construction under SCFS. A reference implementation is available, with embargoed components scheduled for public release after coordinated disclosure.
+ <strong>SCFS (Supply-Chain-Free Skills)</strong> is a capability-based reference runtime that integrates five existing security primitives into a single host with six security properties (P1 to P6): WASM-based isolation, capability tokens with per-invocation scoping, sigstore-style signed instruction attestation, Fides-style information-flow control<sup class="ref"><a href="#ref-fides">4</a></sup>, and SLSA reproducible-build manifests<sup class="ref"><a href="#ref-slsa">5</a></sup>. The contribution is <em>integration</em>: a working composition of primitives that have not been combined this way before, packaged so other platforms can adopt or shim against the same contract.
+ </p>
+ <p>
+ We exercise the runtime against three documented supply-chain vulnerability classes from the surveyed literature, instantiated in current agentic-skill platforms, and show each is refused by construction. The intent is to demonstrate the runtime, not to introduce new attack primitives.
  </p>
  <div class="sidenote">
- Submission target: USENIX Security 2027 (winter deadline). Coordinated-disclosure schedule with Anthropic security is documented; this site abstracts away concrete attack reproductions until the embargo clears.
+ Honest scope. SCFS does not claim a novel taxonomy or new attack class. The novelty is the integrated runtime and the reference implementation. Targets: open-source v0.2 release, arXiv preprint, and a SaTML 2027 short paper. Coordinated disclosure with Anthropic security covers the embargoed runtime components.
  </div>
 </section>
 
@@ -314,42 +316,42 @@ sup.ref a { border: none; }
  <div class="prop-grid" style="margin-top:1.25rem;">
  <div class="prop">
  <span class="pid">C1</span>
- <h3 style="margin:0;font-size:1rem;">Skill-as-supply-chain framing</h3>
- <p style="margin:.5rem 0 0; font-size: 0.97rem;">Re-anchor the field. Threat model centered on the lifecycle: author → registry → install → invocation → cross-skill composition.</p>
+ <h3 style="margin:0;font-size:1rem;">Reference runtime</h3>
+ <p style="margin:.5rem 0 0; font-size: 0.97rem;">Primary contribution. ~2k Rust LoC integrating Wasmtime + sigstore + Fides + capability tokens + SLSA manifests into one host. 19 tests pass.</p>
  </div>
  <div class="prop">
  <span class="pid">C2</span>
- <h3 style="margin:0;font-size:1rem;">Six load-bearing properties</h3>
- <p style="margin:.5rem 0 0; font-size: 0.97rem;">P1 declared capability surface · P2 signed instruction attestation · P3 transient capability tokens · P4 reproducible skill builds · P5 default-deny cross-skill flow · P6 update-gating.</p>
+ <h3 style="margin:0;font-size:1rem;">Six-property integration</h3>
+ <p style="margin:.5rem 0 0; font-size: 0.97rem;">P1 declared capability surface, P2 signed instruction attestation, P3 transient capability tokens, P4 reproducible builds, P5 default-deny cross-skill flow, P6 update-gating. Each property maps to one existing primitive.</p>
  </div>
  <div class="prop">
  <span class="pid">C3</span>
- <h3 style="margin:0;font-size:1rem;">Three new attack classes</h3>
- <p style="margin:.5rem 0 0; font-size: 0.97rem;">Reproducible PoCs targeting author-stage typo-squat, post-install malicious update, and cross-skill compositional exfiltration. Details abstracted on this site until disclosure clears.</p>
+ <h3 style="margin:0;font-size:1rem;">Reproducible vulnerability demos</h3>
+ <p style="margin:.5rem 0 0; font-size: 0.97rem;">Three reproducible demonstrations of supply-chain vulnerability classes documented in prior work (typo-squat, post-install update, cross-skill composition), exercised in current agentic-skill platforms. Not new attack primitives.</p>
  </div>
  <div class="prop">
  <span class="pid">C4</span>
- <h3 style="margin:0;font-size:1rem;">Reference runtime</h3>
- <p style="margin:.5rem 0 0; font-size: 0.97rem;">~2k Rust LoC composing Wasmtime + sigstore + Fides + capability tokens + SLSA manifests. 19 tests cover happy path + 3 blocked attack classes.</p>
+ <h3 style="margin:0;font-size:1rem;">Open specifications</h3>
+ <p style="margin:.5rem 0 0; font-size: 0.97rem;">Manifest JSON Schema, instruction front-matter schema, CTS OpenAPI. Permissive license. Designed so other skill platforms can adopt the same contract or shim against it.</p>
  </div>
  <div class="prop">
  <span class="pid">C5</span>
- <h3 style="margin:0;font-size:1rem;">Coverage map vs prior SoKs</h3>
- <p style="margin:.5rem 0 0; font-size: 0.97rem;">SCFS is the constructive union of defenses surveyed by Maloyan &amp; Namiot (2026), Xu &amp; Yan (2026), Jiang et al. (2026). Where they end, we start.</p>
+ <h3 style="margin:0;font-size:1rem;">Organising frame for the threat surface</h3>
+ <p style="margin:.5rem 0 0; font-size: 0.97rem;">A working five-axis structuring of the threat surface used to map each documented vulnerability class to the SCFS property that blocks it. Pedagogical, not a novel taxonomy claim.</p>
  </div>
  <div class="prop">
  <span class="pid">C6</span>
- <h3 style="margin:0;font-size:1rem;">Open specifications</h3>
- <p style="margin:.5rem 0 0; font-size: 0.97rem;">Manifest JSON Schema, instruction front-matter schema, CTS OpenAPI - all under permissive license, designed for adoption by other skill platforms.</p>
+ <h3 style="margin:0;font-size:1rem;">Honest related-work positioning</h3>
+ <p style="margin:.5rem 0 0; font-size: 0.97rem;">Three concurrent SoKs (P020 Maloyan, P033 Xu, P034 Jiang) map the threat landscape. SCFS does not duplicate that mapping. It ships the buildable defense those papers point toward.</p>
  </div>
  </div>
 </section>
 
 <!-- THREAT MODEL / 5-axis -->
 <section id="threat" class="reveal">
- <h2>Five-axis threat surface</h2>
+ <h2>Organising frame for the threat surface</h2>
  <p>
- Existing taxonomies bake injection point and payload into a single dimension. We separate them. Each surveyed attack - and each of our three new PoCs - maps cleanly to a vector across five orthogonal axes:
+ The surveyed literature uses several overlapping taxonomies. To map each documented vulnerability class to the SCFS property that refuses it, we separate two often-conflated dimensions (injection point and payload) and use five axes for clarity. This is a presentation device, not a novel taxonomy:
  </p>
  <ol style="margin-top: 1rem; padding-left: 1.4rem;">
  <li><strong>Injection point</strong> - author · registry · install · invocation · runtime composition</li>
@@ -455,9 +457,9 @@ sequenceDiagram
 
 <!-- POC -->
 <section id="pocs" class="reveal">
- <h2>Three attacks SCFS defeats</h2>
+ <h2>Three vulnerability classes the runtime refuses</h2>
  <p>
- Each PoC targets a distinct injection point on the five-axis surface. <strong>Concrete attack code, exfil endpoint patterns, and reproduction steps are withheld pending coordinated-disclosure clearance.</strong> What follows is the abstracted threat model and the property in SCFS that blocks it.
+ These are documented classes from the surveyed literature (typo-squat from package-ecosystem lit, post-install update from browser-extension lit, cross-skill indirect prompt injection from Greshake / InjecAgent / Worms-paper). We exercise each against current agentic-skill platforms and against SCFS. The attack <em>classes</em> are not novel; the value is showing that SCFS refuses them by construction. <strong>Concrete reproduction steps stay private until coordinated-disclosure with Anthropic clears.</strong>
  </p>
 
  <div class="card card-accent" style="margin-top: 1.2rem;">
@@ -544,7 +546,7 @@ attestation:
  </div>
  </div>
  <p style="margin-top:1.5rem;">
- SCFS differs along two load-bearing axes: <strong>(a)</strong> we ship a reference runtime with passing tests, not a survey; <strong>(b)</strong> our taxonomy separates injection point and payload as orthogonal axes, which makes the post-install update class - empty in all three prior SoKs - first-class.
+ SCFS does not duplicate any of these mappings. Its contribution is orthogonal: where these papers describe defenses abstractly, we integrate five concrete primitives into one runtime, ship the code, and run it against documented vulnerability classes. No claim of novel taxonomy or novel attack primitives is made.
  </p>
 </section>
 
