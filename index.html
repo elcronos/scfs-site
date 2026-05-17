@@ -93,22 +93,28 @@ body {
 }
 @keyframes aurora { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
 
-/* Distill-ish layout: main column 720px, sidebar gutter for sidenotes */
+/* Distill-ish layout: symmetric gutters so the 720px main column centers.
+   Sidenotes still live in the right gutter (.side class). */
 .distill {
  display: grid;
  grid-template-columns:
- minmax(1rem,1fr)
+ 1fr
+ minmax(0, 200px)
  minmax(0, 720px)
- minmax(1rem, 200px);
- column-gap: 2.5rem;
+ minmax(0, 200px)
+ 1fr;
+ column-gap: 2rem;
 }
-.distill > * { grid-column: 2 / 3; }
+.distill > * { grid-column: 3 / 4; }
 .distill > .full { grid-column: 1 / -1; }
-.distill > .wide { grid-column: 2 / 4; }
-.distill > .side { grid-column: 3 / 4; }
+.distill > .wide { grid-column: 3 / 5; }
+.distill > .side { grid-column: 4 / 5; }
 @media (max-width: 1024px) {
  .distill { grid-template-columns: 1rem minmax(0,1fr) 1rem; }
- .distill > .side { grid-column: 2/3; }
+ .distill > * { grid-column: 2 / 3; }
+ .distill > .full { grid-column: 1 / -1; }
+ .distill > .wide { grid-column: 2 / 3; }
+ .distill > .side { grid-column: 2 / 3; }
 }
 
 /* Body type */
