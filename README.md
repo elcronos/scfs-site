@@ -1,4 +1,4 @@
-# SCFS — project site
+# SCFS - project site
 
 Distill-style single-page web companion for the paper *Supply-Chain-Free Skills: A Capability-Based Architecture for Trustworthy Agentic AI Skill Ecosystems*.
 
